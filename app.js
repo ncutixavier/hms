@@ -43,6 +43,36 @@ const PAGES = {
   settings:  { t:'Settings',        s:'System configuration',            cta:'' },
 };
 
+const HOTEL_ACCOUNTS = [
+  {
+    id: 'inyambo',
+    name: 'Inyambo Hotel',
+    location: 'Kigali · Nyarutarama',
+    rooms: 17,
+    occupancy: '85%',
+    revenue: '850k',
+    initials: 'IH',
+  },
+  {
+    id: 'lakeview',
+    name: 'Lakeview Suites',
+    location: 'Rubavu · Lake Kivu',
+    rooms: 24,
+    occupancy: '72%',
+    revenue: '1.1M',
+    initials: 'LS',
+  },
+  {
+    id: 'akagera',
+    name: 'Akagera Lodge',
+    location: 'Kayonza · Eastern Province',
+    rooms: 13,
+    occupancy: '61%',
+    revenue: '620k',
+    initials: 'AL',
+  },
+];
+
 const ROLE_LABELS = {
   admin:'Admin / Manager', receptionist:'Receptionist', cashier:'Cashier',
   housekeeping:'Housekeeping', kitchen:'Kitchen / Chef', bar:'Bartender', security:'Security',
@@ -209,6 +239,7 @@ let ordFlt = 'all', ordSrc = 'all';
 let selOrdItems = [];
 let invCatF = 'all';
 let posCart = { restaurant: {}, bar: {} };
+let selectedHotel = HOTEL_ACCOUNTS[0];
 
 /* ── HELPERS ──────────────────────────────── */
 function ava(i) { return `background:${AVA_BG[i%6]};color:${AVA_CO[i%6]}`; }
@@ -224,6 +255,110 @@ function qni(id) { return document.querySelector(`.ni[onclick*="${id}"]`); }
 function el(id) { return document.getElementById(id); }
 function CM(id) { el(id).classList.remove('open'); }
 function OM(id) { el(id).classList.add('open'); }
+
+/* ── THEME ────────────────────────────────── */
+function savedTheme() {
+  try { return localStorage.getItem('hms-theme'); }
+  catch (_) { return null; }
+}
+
+function persistTheme(theme) {
+  try { localStorage.setItem('hms-theme', theme); }
+  catch (_) {}
+}
+
+function setTheme(theme) {
+  const nextTheme = theme === 'light' ? 'light' : 'dark';
+  document.body.dataset.theme = nextTheme;
+  persistTheme(nextTheme);
+
+  const btn = el('theme-toggle');
+  if (!btn) return;
+
+  const isLight = nextTheme === 'light';
+  btn.innerHTML = `<i class="ti ${isLight ? 'ti-moon' : 'ti-sun'}"></i>`;
+  btn.title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+  btn.setAttribute('aria-label', btn.title);
+}
+
+function initTheme() {
+  const systemPrefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  setTheme(savedTheme() || (systemPrefersLight ? 'light' : 'dark'));
+}
+
+function toggleTheme() {
+  setTheme(document.body.dataset.theme === 'light' ? 'dark' : 'light');
+}
+
+/* ── AUTH FLOW ────────────────────────────── */
+function normalizePhone(value) {
+  const digits = String(value || '').replace(/\D/g, '');
+  if (digits.startsWith('250')) return `+${digits}`;
+  return `+250${digits}`;
+}
+
+function setAuthStep(step) {
+  document.querySelectorAll('.auth-card').forEach(card => card.classList.remove('active'));
+  const target = el(step === 'hotels' ? 'auth-hotels' : 'auth-login');
+  if (target) target.classList.add('active');
+}
+
+function renderHotelList() {
+  const list = el('hotel-list');
+  if (!list) return;
+  list.innerHTML = HOTEL_ACCOUNTS.map(hotel => `
+    <button class="hotel-option" onclick="selectHotel('${hotel.id}')">
+      <div class="hotel-mark">${hotel.initials}</div>
+      <div>
+        <div class="hotel-name">${hotel.name}</div>
+        <div class="hotel-meta">${hotel.location} · ${hotel.rooms} rooms</div>
+        <div class="hotel-stats">
+          <span class="bp bg2">${hotel.occupancy} occupied</span>
+          <span class="bp bb2">${hotel.revenue} today</span>
+        </div>
+      </div>
+    </button>
+  `).join('');
+}
+
+function loginWithPhone(event) {
+  event.preventDefault();
+  const phone = normalizePhone(el('login-phone').value);
+  if (phone.length < 13) {
+    alert('Enter a valid phone number');
+    return;
+  }
+
+  renderHotelList();
+  if (HOTEL_ACCOUNTS.length > 1) {
+    setAuthStep('hotels');
+  } else {
+    selectHotel(HOTEL_ACCOUNTS[0].id);
+  }
+}
+
+function showLogin() {
+  setAuthStep('login');
+  const phone = el('login-phone');
+  if (phone) phone.focus();
+}
+
+function selectHotel(id) {
+  selectedHotel = HOTEL_ACCOUNTS.find(hotel => hotel.id === id) || HOTEL_ACCOUNTS[0];
+  applySelectedHotel();
+  document.body.classList.remove('auth-active');
+  S('dashboard', qni('dashboard') || document.querySelector('.ni.active'));
+}
+
+function applySelectedHotel() {
+  document.querySelectorAll('.sb-name, .auth-brand-name').forEach(node => {
+    node.textContent = selectedHotel.name;
+  });
+  const footName = document.querySelector('.foot-name');
+  if (footName) footName.textContent = 'Admin';
+  const footRole = document.querySelector('.foot-role');
+  if (footRole) footRole.textContent = selectedHotel.name;
+}
 
 /* ── NAVIGATION ──────────────────────────── */
 function S(id, navEl) {
@@ -1106,6 +1241,11 @@ function confirmDel() {
 
 /* ── INIT ─────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  renderHotelList();
+  setAuthStep('login');
+  const phoneInput = el('login-phone');
+  if (phoneInput) phoneInput.focus();
   S('dashboard', document.querySelector('.ni.active'));
   renderOrdPicks();
   updatePermPreview();
