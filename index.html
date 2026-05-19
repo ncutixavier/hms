@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inyambo Hotel — Management System</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+</head>
+<body>
+
+<div class="shell" id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-ic"><i class="ti ti-building"></i></div>
+      <div class="sb-name">Inyambo Hotel</div>
+      <div class="sb-sub">Management System</div>
+    </div>
+    <nav class="nav">
+      <div class="ns">Overview</div>
+      <div class="ni active" onclick="S('dashboard',this)"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+      <div class="ns">Operations</div>
+      <div class="ni" onclick="S('rooms',this)"><i class="ti ti-bed"></i>Rooms</div>
+      <div class="ni" onclick="S('bookings',this)"><i class="ti ti-calendar"></i>Bookings</div>
+      <div class="ni" onclick="S('checkin',this)"><i class="ti ti-door-enter"></i>Check-in/out</div>
+      <div class="ni" onclick="S('guests',this)"><i class="ti ti-users"></i>Guests</div>
+      <div class="ns">Revenue</div>
+      <div class="ni" onclick="S('restaurant',this)"><i class="ti ti-tools-kitchen-2"></i>Restaurant</div>
+      <div class="ni" onclick="S('bar',this)"><i class="ti ti-beer"></i>Bar</div>
+      <div class="ni" onclick="S('orders',this)"><i class="ti ti-shopping-cart"></i>Orders <span class="nbadge" id="nb-ord">3</span></div>
+      <div class="ni" onclick="S('billing',this)"><i class="ti ti-receipt"></i>Billing</div>
+      <div class="ns">Management</div>
+      <div class="ni" onclick="S('reports',this)"><i class="ti ti-chart-bar"></i>Reports</div>
+      <div class="ni" onclick="S('expenses',this)"><i class="ti ti-cash"></i>Expenses</div>
+      <div class="ni" onclick="S('staff',this)"><i class="ti ti-id-badge"></i>Staff</div>
+      <div class="ni" onclick="S('inventory',this)"><i class="ti ti-package"></i>Inventory</div>
+      <div class="ni" onclick="S('settings',this)"><i class="ti ti-settings"></i>Settings</div>
+    </nav>
+    <div class="sb-foot">
+      <div class="ava-s">AM</div>
+      <div>
+        <div class="foot-name">Admin</div>
+        <div class="foot-role">Manager</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ct">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="pg-title" id="pg-title">Dashboard</span>
+        <span class="pg-sub" id="pg-sub">May 19, 2026</span>
+      </div>
+      <div class="tbr">
+        <button class="tbb" title="Search"><i class="ti ti-search"></i></button>
+        <button class="tbb" title="Notifications"><i class="ti ti-bell"></i></button>
+        <button class="tbb p" id="main-cta" onclick="ctaClick()">
+          <i class="ti ti-plus"></i> <span id="cta-lbl">New Booking</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="screen active" id="screen-dashboard">
+      <div class="stat-grid g4">
+        <div class="sc"><div class="sl">Occupied rooms</div><div class="sv">12</div><div class="ss"><span class="bp bg2">85%</span> occupancy rate</div></div>
+        <div class="sc"><div class="sl">Available rooms</div><div class="sv">5</div><div class="ss">3 reserved · 2 free</div></div>
+        <div class="sc"><div class="sl">Today's revenue</div><div class="sv sm">850k RWF</div><div class="ss"><span class="bp bg2">↑ 12%</span> vs yesterday</div></div>
+        <div class="sc"><div class="sl">Net profit (MTD)</div><div class="sv sm">4.2M RWF</div><div class="ss"><span class="bp br2">↓ 3%</span> vs last month</div></div>
+      </div>
+      <div class="stat-grid g4">
+        <div class="sc"><div class="sl">Check-ins today</div><div class="sv">4</div><div class="ss">1 pending arrival</div></div>
+        <div class="sc"><div class="sl">Check-outs today</div><div class="sv">3</div><div class="ss">2 completed</div></div>
+        <div class="sc"><div class="sl">Restaurant sales</div><div class="sv sm">185k</div><div class="ss">32 covers today</div></div>
+        <div class="sc"><div class="sl">Bar sales</div><div class="sv sm">94k</div><div class="ss"><span class="bp ba2">Peak: 8pm</span></div></div>
+      </div>
+      <div class="dash-bottom">
+        <div class="pnl">
+          <div class="ph"><span class="pt2">Revenue this week</span><span class="pl" onclick="S('reports',qni('reports'))">Full report →</span></div>
+          <div class="bar-r"><span class="bar-l">Rooms</span><div class="bar-t"><div class="bar-f" style="width:82%;background:var(--ac)"></div></div><span class="bar-v">4.1M</span></div>
+          <div class="bar-r"><span class="bar-l">Restaurant</span><div class="bar-t"><div class="bar-f" style="width:55%;background:var(--amber)"></div></div><span class="bar-v">1.2M</span></div>
+          <div class="bar-r"><span class="bar-l">Bar</span><div class="bar-t"><div class="bar-f" style="width:30%;background:var(--blue)"></div></div><span class="bar-v">650k</span></div>
+          <div class="bar-r"><span class="bar-l">Walk-in</span><div class="bar-t"><div class="bar-f" style="width:18%;background:var(--purple)"></div></div><span class="bar-v">210k</span></div>
+          <div class="bar-r"><span class="bar-l">Expenses</span><div class="bar-t"><div class="bar-f" style="width:40%;background:var(--red)"></div></div><span class="bar-v">-950k</span></div>
+        </div>
+        <div class="pnl">
+          <div class="ph"><span class="pt2">Live activity</span></div>
+          <div class="act-r"><div class="act-dot" style="background:var(--green)"></div><span class="act-tx">Ange Uwase checked in · Room 204</span><span class="act-ti">2m</span></div>
+          <div class="act-r"><div class="act-dot" style="background:var(--amber)"></div><span class="act-tx">Room order · Rm 203 · Grilled Chicken</span><span class="act-ti">6m</span></div>
+          <div class="act-r"><div class="act-dot" style="background:var(--purple)"></div><span class="act-tx">Walk-in · Table 3 · Mojito ×2 · 16k</span><span class="act-ti">11m</span></div>
+          <div class="act-r"><div class="act-dot" style="background:var(--blue)"></div><span class="act-tx">Bar tab closed · Rm 107 · 22,500 RWF</span><span class="act-ti">18m</span></div>
+          <div class="act-r"><div class="act-dot" style="background:var(--red)"></div><span class="act-tx">Room 302 checked out · 120,000 RWF</span><span class="act-ti">34m</span></div>
+          <div class="act-r"><div class="act-dot" style="background:var(--gray)"></div><span class="act-tx">Room 210 flagged for maintenance</span><span class="act-ti">1h</span></div>
+        </div>
+        <div class="pnl">
+          <div class="ph"><span class="pt2">Inventory alerts</span><span class="pl" onclick="S('inventory',qni('inventory'))">Manage →</span></div>
+          <div class="inv-row"><div class="inv-info"><div class="inv-name">Toilet paper rolls</div><div class="inv-cat-lbl">Housekeeping</div></div><div class="inv-bar"><div class="inv-fill" style="width:12%;background:var(--red)"></div></div><span class="inv-qty" style="color:#f87171">8</span><span class="inv-alert alert-low">Low</span></div>
+          <div class="inv-row"><div class="inv-info"><div class="inv-name">Hand soap (500ml)</div><div class="inv-cat-lbl">Housekeeping</div></div><div class="inv-bar"><div class="inv-fill" style="width:22%;background:var(--amber)"></div></div><span class="inv-qty" style="color:var(--amber)">18</span><span class="inv-alert alert-mid">Mid</span></div>
+          <div class="inv-row"><div class="inv-info"><div class="inv-name">Primus Beer (crate)</div><div class="inv-cat-lbl">Bar</div></div><div class="inv-bar"><div class="inv-fill" style="width:15%;background:var(--red)"></div></div><span class="inv-qty" style="color:#f87171">3</span><span class="inv-alert alert-low">Low</span></div>
+          <div class="inv-row"><div class="inv-info"><div class="inv-name">Laundry detergent</div><div class="inv-cat-lbl">Laundry</div></div><div class="inv-bar"><div class="inv-fill" style="width:70%;background:var(--green)"></div></div><span class="inv-qty" style="color:#4ade90">24</span><span class="inv-alert alert-ok">OK</span></div>
+          <div class="inv-row"><div class="inv-info"><div class="inv-name">Beef (kg)</div><div class="inv-cat-lbl">Kitchen</div></div><div class="inv-bar"><div class="inv-fill" style="width:30%;background:var(--amber)"></div></div><span class="inv-qty" style="color:var(--amber)">12</span><span class="inv-alert alert-mid">Mid</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROOMS -->
+    <section class="screen" id="screen-rooms">
+      <div class="leg">
+        <div class="leg-i"><div class="leg-d" style="background:#4ade90"></div>Available</div>
+        <div class="leg-i"><div class="leg-d" style="background:#f87171"></div>Occupied</div>
+        <div class="leg-i"><div class="leg-d" style="background:#fbbf24"></div>Reserved</div>
+        <div class="leg-i"><div class="leg-d" style="background:#60a5fa"></div>Cleaning</div>
+        <div class="leg-i"><div class="leg-d" style="background:#888"></div>Maintenance</div>
+      </div>
+      <div class="room-filter-row">
+        <button class="fp-large active" id="rfbtn-all" onclick="fRoom('all',this)">All rooms</button>
+        <button class="fp-large" id="rfbtn-avail" onclick="fRoom('avail',this)">Available</button>
+        <button class="fp-large" id="rfbtn-occ" onclick="fRoom('occ',this)">Occupied</button>
+        <button class="fp-large" id="rfbtn-res" onclick="fRoom('res',this)">Reserved</button>
+        <button class="fp-large" id="rfbtn-cln" onclick="fRoom('cln',this)">Cleaning</button>
+      </div>
+      <div class="room-filter-row2">
+        <button class="fp-large" id="rfbtn-mnt" onclick="fRoom('mnt',this)">Maintenance</button>
+        <span class="spacer"></span>
+        <button class="fp-large active" id="floor-tog" onclick="togFloor(this)"><i class="ti ti-building"></i> By floor</button>
+      </div>
+      <div id="rooms-container"></div>
+    </section>
+
+    <!-- BOOKINGS -->
+    <section class="screen" id="screen-bookings">
+      <div class="stat-grid g4">
+        <div class="sc"><div class="sl">Total bookings</div><div class="sv">13</div><div class="ss">All channels</div></div>
+        <div class="sc"><div class="sl">Arriving today</div><div class="sv" style="color:#4ade90">2</div><div class="ss">Check-ins due</div></div>
+        <div class="sc"><div class="sl">Departing today</div><div class="sv">1</div><div class="ss">Check-outs due</div></div>
+        <div class="sc"><div class="sl">Pending confirm</div><div class="sv" style="color:var(--amber)">2</div><div class="ss">Awaiting action</div></div>
+      </div>
+      <div class="toolbar">
+        <div class="search-inp"><i class="ti ti-search"></i><input type="text" placeholder="Search guest, room..." id="bk-search" oninput="renderBookings()"></div>
+        <button class="fp-sm active" onclick="fBk('all',this)">All</button>
+        <button class="fp-sm" onclick="fBk('confirmed',this)">Confirmed</button>
+        <button class="fp-sm" onclick="fBk('pending',this)">Pending</button>
+        <button class="fp-sm" onclick="fBk('checked_in',this)">Checked in</button>
+        <button class="fp-sm" onclick="fBk('cancelled',this)">Cancelled</button>
+        <span class="spacer"></span>
+        <div class="vt">
+          <button class="vt-b active" id="vt-lst" onclick="setBkView('list')"><i class="ti ti-list"></i></button>
+          <button class="vt-b" id="vt-cal" onclick="setBkView('cal')"><i class="ti ti-calendar"></i></button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <span class="filter-label">Channel:</span>
+        <button class="fp-sm active" onclick="fBkCh('all',this)">All</button>
+        <button class="fp-sm" onclick="fBkCh('direct',this)">Direct</button>
+        <button class="fp-sm" onclick="fBkCh('airbnb',this)">Airbnb</button>
+        <button class="fp-sm" onclick="fBkCh('booking',this)">Booking.com</button>
+        <button class="fp-sm" onclick="fBkCh('expedia',this)">Expedia</button>
+        <button class="fp-sm" onclick="fBkCh('walkin',this)">Walk-in</button>
+      </div>
+      <div id="bk-list-view">
+        <div class="pnl no-pad">
+          <table class="bk-tbl">
+            <thead><tr><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>N</th><th>Channel</th><th>Status</th><th>Amount</th><th></th></tr></thead>
+            <tbody id="bk-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="bk-cal-view" style="display:none">
+        <div class="cal-wrap">
+          <div class="cal-hdr">
+            <button class="cal-nav" onclick="calPrev()"><i class="ti ti-chevron-left"></i></button>
+            <span class="cal-month" id="cal-lbl"></span>
+            <button class="cal-nav" onclick="calNext()"><i class="ti ti-chevron-right"></i></button>
+          </div>
+          <div class="cal-g">
+            <div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div>
+            <div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div>
+            <div id="cal-days" style="display:contents"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GUESTS -->
+    <section class="screen flex-screen" id="screen-guests">
+      <div class="g-list-pnl">
+        <div class="glp-hdr">
+          <div class="sbox"><i class="ti ti-search"></i><input type="text" placeholder="Search guests..." id="g-search" oninput="renderGuests()"></div>
+          <div class="filter-row-sm">
+            <button class="fp-sm active" onclick="gFlt('all',this)">All</button>
+            <button class="fp-sm" onclick="gFlt('vip',this)"><i class="ti ti-star"></i> VIP</button>
+            <button class="fp-sm" onclick="gFlt('inhouse',this)">In-house</button>
+            <button class="fp-sm" onclick="gFlt('returning',this)">Returning</button>
+          </div>
+        </div>
+        <div class="g-list" id="g-list"></div>
+      </div>
+      <div class="g-detail-wrap">
+        <div class="det-empty" id="g-empty">
+          <i class="ti ti-user"></i>
+          <span>Select a guest to view their profile</span>
+        </div>
+        <div class="g-det" id="g-det" style="display:none"></div>
+      </div>
+    </section>
+
+    <!-- RESTAURANT POS -->
+    <section class="screen pos-screen" id="screen-restaurant">
+      <div class="pos-layout">
+        <div class="pos-menu">
+          <div class="cat-tabs">
+            <button class="ct2 active" onclick="setCat(this)">All</button>
+            <button class="ct2" onclick="setCat(this)">Starters</button>
+            <button class="ct2" onclick="setCat(this)">Mains</button>
+            <button class="ct2" onclick="setCat(this)">Desserts</button>
+            <button class="ct2" onclick="setCat(this)">Drinks</button>
+          </div>
+          <div class="mg">
+            <div class="mi" onclick="addPos(this,'Grilled Chicken',18000,'restaurant')"><div class="mi-n">Grilled Chicken</div><div class="mi-p">18,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Garden Salad',8000,'restaurant')"><div class="mi-n">Garden Salad</div><div class="mi-p">8,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Beef Brochette',25000,'restaurant')"><div class="mi-n">Beef Brochette</div><div class="mi-p">25,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Tilapia Fillet',22000,'restaurant')"><div class="mi-n">Tilapia Fillet</div><div class="mi-p">22,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Pasta Carbonara',14000,'restaurant')"><div class="mi-n">Pasta Carbonara</div><div class="mi-p">14,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Chocolate Cake',7000,'restaurant')"><div class="mi-n">Chocolate Cake</div><div class="mi-p">7,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Ugali & Stew',9500,'restaurant')"><div class="mi-n">Ugali & Stew</div><div class="mi-p">9,500 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Fresh Juice',4500,'restaurant')"><div class="mi-n">Fresh Juice</div><div class="mi-p">4,500 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Pizza Margherita',16000,'restaurant')"><div class="mi-n">Pizza Margherita</div><div class="mi-p">16,000 RWF</div></div>
+          </div>
+        </div>
+        <div class="po">
+          <div class="po-header">Order</div>
+          <select class="fi" id="pos-room"><option value="">— walk-in —</option><option>101</option><option>103</option><option>201</option><option selected>203</option><option>204</option></select>
+          <select class="fi" id="pos-table"><option>Table 1</option><option selected>Table 5</option></select>
+          <div id="pos-items-r" class="pos-items"></div>
+          <div class="pot"><span>Total</span><span class="pot-val" id="pos-total-r">0 RWF</span></div>
+          <button class="pb pn" onclick="posPay('restaurant')">Pay now</button>
+          <button class="pb ar" onclick="posRoom('restaurant')">Add to room</button>
+          <button class="pb wi" onclick="posWalk('restaurant')">Walk-in bill</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAR POS -->
+    <section class="screen pos-screen" id="screen-bar">
+      <div class="pos-layout">
+        <div class="pos-menu">
+          <div class="cat-tabs">
+            <button class="ct2 active" onclick="setCat(this)">All</button>
+            <button class="ct2" onclick="setCat(this)">Beer</button>
+            <button class="ct2" onclick="setCat(this)">Wine</button>
+            <button class="ct2" onclick="setCat(this)">Cocktails</button>
+            <button class="ct2" onclick="setCat(this)">Spirits</button>
+          </div>
+          <div class="mg">
+            <div class="mi" onclick="addPos(this,'Mojito',8000,'bar')"><div class="mi-n">Mojito</div><div class="mi-p">8,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Primus Beer',2500,'bar')"><div class="mi-n">Primus Beer</div><div class="mi-p">2,500 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Red Wine',12000,'bar')"><div class="mi-n">Red Wine</div><div class="mi-p">12,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Whisky on ice',10000,'bar')"><div class="mi-n">Whisky on ice</div><div class="mi-p">10,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Gin & Tonic',9000,'bar')"><div class="mi-n">Gin & Tonic</div><div class="mi-p">9,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Dawa Cocktail',9500,'bar')"><div class="mi-n">Dawa Cocktail</div><div class="mi-p">9,500 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Champagne',35000,'bar')"><div class="mi-n">Champagne</div><div class="mi-p">35,000 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Mutzig Lager',2500,'bar')"><div class="mi-n">Mutzig Lager</div><div class="mi-p">2,500 RWF</div></div>
+            <div class="mi" onclick="addPos(this,'Soda & Water',1500,'bar')"><div class="mi-n">Soda & Water</div><div class="mi-p">1,500 RWF</div></div>
+          </div>
+        </div>
+        <div class="po">
+          <div class="po-header">Bar tab</div>
+          <select class="fi" id="bar-room"><option value="">— walk-in —</option><option>101</option><option selected>105</option><option>201</option><option>302</option></select>
+          <div id="pos-items-b" class="pos-items"></div>
+          <div class="pot"><span>Total</span><span class="pot-val" id="pos-total-b">0 RWF</span></div>
+          <button class="pb pn" onclick="posPay('bar')">Pay now</button>
+          <button class="pb ar" onclick="posRoom('bar')">Add to room</button>
+          <button class="pb wi" onclick="posWalk('bar')">Walk-in bill</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORDERS -->
+    <section class="screen" id="screen-orders">
+      <div class="stat-grid g4">
+        <div class="sc"><div class="sl">Active orders</div><div class="sv" id="ord-active">6</div><div class="ss">Right now</div></div>
+        <div class="sc"><div class="sl">Ready to deliver</div><div class="sv" id="ord-ready" style="color:#4ade90">2</div><div class="ss">Awaiting delivery</div></div>
+        <div class="sc"><div class="sl">Walk-in orders</div><div class="sv" id="ord-walkin">3</div><div class="ss">No room</div></div>
+        <div class="sc"><div class="sl">Order revenue</div><div class="sv sm">312k</div><div class="ss">RWF today</div></div>
+      </div>
+      <div class="toolbar">
+        <button class="fp-sm active" onclick="fOrd('all',this)">All</button>
+        <button class="fp-sm" onclick="fOrd('new',this)">New <span id="ord-nb" class="mini-badge">3</span></button>
+        <button class="fp-sm" onclick="fOrd('preparing',this)">Preparing</button>
+        <button class="fp-sm" onclick="fOrd('ready',this)">Ready</button>
+        <button class="fp-sm" onclick="fOrd('delivered',this)">Delivered</button>
+        <span class="spacer"></span>
+        <button class="fp-sm" onclick="fOrdSrc('restaurant',this)"><i class="ti ti-tools-kitchen-2"></i> Restaurant</button>
+        <button class="fp-sm" onclick="fOrdSrc('bar',this)"><i class="ti ti-beer"></i> Bar</button>
+        <button class="fp-sm" onclick="fOrdSrc('walkin',this)"><i class="ti ti-walk"></i> Walk-in</button>
+      </div>
+      <div class="orders-grid" id="orders-grid"></div>
+    </section>
+
+    <!-- BILLING -->
+    <section class="screen" id="screen-billing">
+      <div class="billing-grid">
+        <div class="pnl">
+          <div class="ph"><span class="pt2">Invoice #INV-2026-0519</span><span style="font-size:10px;color:var(--acb)">Rm 203 · Sarah Kim</span></div>
+          <div class="inv-sec-lbl">Room charges</div>
+          <div class="inv-line"><span>Twin · 3 nights</span><span>75,000 RWF</span></div>
+          <div class="inv-sec-lbl">Restaurant</div>
+          <div class="inv-line"><span>Dinner May 17</span><span>22,000 RWF</span></div>
+          <div class="inv-line"><span>Breakfast May 18</span><span>8,500 RWF</span></div>
+          <div class="inv-sec-lbl">Bar</div>
+          <div class="inv-line"><span>Tab #B-09</span><span>14,000 RWF</span></div>
+          <hr class="inv-divider">
+          <div class="inv-line"><span>Subtotal</span><span>119,500 RWF</span></div>
+          <div class="inv-line"><span>VAT 18%</span><span>21,510 RWF</span></div>
+          <div class="inv-line"><span>Discount</span><span style="color:var(--acb)">−5,000 RWF</span></div>
+          <div class="inv-total"><span>Total due</span><span>136,010 RWF</span></div>
+          <div class="pay-methods">
+            <button class="pb pn" style="flex:1">Cash</button>
+            <button class="pb" style="flex:1">Card</button>
+            <button class="pb" style="flex:1">Mobile</button>
+          </div>
+        </div>
+        <div class="pnl">
+          <div class="ph"><span class="pt2">Recent invoices</span></div>
+          <div class="inv-list-row"><div class="ilr-info"><div class="ilr-name">John Mugisha</div><div class="ilr-sub">Room 101 · May 19</div></div><div class="ilr-right"><div class="ilr-amount">45,000 RWF</div><span class="bp bg2">Paid</span></div></div>
+          <div class="inv-list-row"><div class="ilr-info"><div class="ilr-name">Walk-in · Table 3</div><div class="ilr-sub">Restaurant · May 19</div></div><div class="ilr-right"><div class="ilr-amount">34,500 RWF</div><span class="bp bg2">Paid</span></div></div>
+          <div class="inv-list-row"><div class="ilr-info"><div class="ilr-name">James Osei</div><div class="ilr-sub">Room 302 · May 18</div></div><div class="ilr-right"><div class="ilr-amount">220,000 RWF</div><span class="bp bg2">Paid</span></div></div>
+          <div class="inv-list-row"><div class="ilr-info"><div class="ilr-name">Ange Uwase</div><div class="ilr-sub">Room 204 · May 19</div></div><div class="ilr-right"><div class="ilr-amount">80,000 RWF</div><span class="bp ba2">Pending</span></div></div>
+          <div class="inv-list-row"><div class="ilr-info"><div class="ilr-name">Marie & Paul</div><div class="ilr-sub">Room 103 · May 19</div></div><div class="ilr-right"><div class="ilr-amount">92,000 RWF</div><span class="bp ba2">Pending</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section class="screen" id="screen-reports">
+      <div class="pnl" style="margin-bottom:12px">
+        <div class="ph"><span class="pt2">Export reports</span></div>
+        <div class="export-row">
+          <button class="exp-btn xl" onclick="alert('Exporting Room Occupancy as Excel...')"><i class="ti ti-file-spreadsheet"></i> Room Occupancy — Excel</button>
+          <button class="exp-btn xl" onclick="alert('Exporting Revenue Report as Excel...')"><i class="ti ti-file-spreadsheet"></i> Revenue Report — Excel</button>
+          <button class="exp-btn xl" onclick="alert('Exporting Expenses as Excel...')"><i class="ti ti-file-spreadsheet"></i> Expenses — Excel</button>
+          <button class="exp-btn pdf" onclick="alert('Exporting Monthly Summary as PDF...')"><i class="ti ti-file-type-pdf"></i> Monthly Summary — PDF</button>
+          <button class="exp-btn csv" onclick="alert('Exporting Guest List as CSV...')"><i class="ti ti-file-text"></i> Guest List — CSV</button>
+          <button class="exp-btn csv" onclick="alert('Exporting Bookings as CSV...')"><i class="ti ti-file-text"></i> Bookings — CSV</button>
+        </div>
+      </div>
+      <div class="reports-grid">
+        <div class="rp">
+          <div class="ph"><span class="pt2">Monthly revenue (RWF)</span></div>
+          <div class="cb">
+            <div class="cbw"><div class="cbr" style="height:40%;background:var(--ac)"></div><div class="cbl">Jan</div></div>
+            <div class="cbw"><div class="cbr" style="height:55%;background:var(--ac)"></div><div class="cbl">Feb</div></div>
+            <div class="cbw"><div class="cbr" style="height:48%;background:var(--ac)"></div><div class="cbl">Mar</div></div>
+            <div class="cbw"><div class="cbr" style="height:70%;background:var(--ac)"></div><div class="cbl">Apr</div></div>
+            <div class="cbw"><div class="cbr" style="height:88%;background:var(--acb)"></div><div class="cbl">May</div></div>
+          </div>
+          <div class="krow">
+            <div class="kb"><div class="kl">This month</div><div class="kv">5.1M</div><div class="kc green">↑ 14%</div></div>
+            <div class="kb"><div class="kl">Occupancy</div><div class="kv">85%</div><div class="kc green">↑ 8%</div></div>
+          </div>
+        </div>
+        <div class="rp">
+          <div class="ph"><span class="pt2">Revenue mix</span></div>
+          <div class="donut-wrap">
+            <svg width="74" height="74" viewBox="0 0 74 74" aria-hidden="true">
+              <circle cx="37" cy="37" r="27" fill="none" stroke="var(--ac)" stroke-width="12" stroke-dasharray="102 68" stroke-dashoffset="0"/>
+              <circle cx="37" cy="37" r="27" fill="none" stroke="var(--amber)" stroke-width="12" stroke-dasharray="51 119" stroke-dashoffset="-102"/>
+              <circle cx="37" cy="37" r="27" fill="none" stroke="var(--blue)" stroke-width="12" stroke-dasharray="17 153" stroke-dashoffset="-153"/>
+              <circle cx="37" cy="37" r="27" fill="none" stroke="var(--purple)" stroke-width="12" stroke-dasharray="11 159" stroke-dashoffset="-170"/>
+            </svg>
+            <div class="donut-legend">
+              <div class="dl"><span class="dld" style="background:var(--ac)"></span>Rooms 60%</div>
+              <div class="dl"><span class="dld" style="background:var(--amber)"></span>Restaurant 30%</div>
+              <div class="dl"><span class="dld" style="background:var(--blue)"></span>Bar 6%</div>
+              <div class="dl"><span class="dld" style="background:var(--purple)"></span>Walk-in 4%</div>
+            </div>
+          </div>
+        </div>
+        <div class="rp">
+          <div class="ph"><span class="pt2">Top dishes</span></div>
+          <div class="bar-r"><span class="bar-l">Beef Broch.</span><div class="bar-t"><div class="bar-f" style="width:90%;background:var(--amber)"></div></div><span class="bar-v">142</span></div>
+          <div class="bar-r"><span class="bar-l">Grilled Ch.</span><div class="bar-t"><div class="bar-f" style="width:72%;background:var(--amber)"></div></div><span class="bar-v">114</span></div>
+          <div class="bar-r"><span class="bar-l">Tilapia</span><div class="bar-t"><div class="bar-f" style="width:58%;background:var(--amber)"></div></div><span class="bar-v">92</span></div>
+          <div class="bar-r"><span class="bar-l">Pizza</span><div class="bar-t"><div class="bar-f" style="width:42%;background:var(--amber)"></div></div><span class="bar-v">67</span></div>
+        </div>
+        <div class="rp">
+          <div class="ph"><span class="pt2">Top bar items</span></div>
+          <div class="bar-r"><span class="bar-l">Mojito</span><div class="bar-t"><div class="bar-f" style="width:88%;background:var(--blue)"></div></div><span class="bar-v">204</span></div>
+          <div class="bar-r"><span class="bar-l">Primus</span><div class="bar-t"><div class="bar-f" style="width:74%;background:var(--blue)"></div></div><span class="bar-v">172</span></div>
+          <div class="bar-r"><span class="bar-l">Red Wine</span><div class="bar-t"><div class="bar-f" style="width:52%;background:var(--blue)"></div></div><span class="bar-v">120</span></div>
+          <div class="bar-r"><span class="bar-l">Whisky</span><div class="bar-t"><div class="bar-f" style="width:36%;background:var(--blue)"></div></div><span class="bar-v">84</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPENSES -->
+    <section class="screen" id="screen-expenses">
+      <div class="toolbar" style="margin-bottom:10px">
+        <button class="fp-sm active">All</button>
+        <button class="fp-sm">Utilities</button>
+        <button class="fp-sm">Salaries</button>
+        <button class="fp-sm">Maintenance</button>
+        <button class="fp-sm">Supplies</button>
+        <span class="spacer"></span>
+        <button class="tbb p"><i class="ti ti-plus"></i> Add expense</button>
+      </div>
+      <div class="pnl no-pad">
+        <table class="exp-tbl">
+          <thead><tr><th>Category</th><th>Description</th><th>Supplier</th><th>Date</th><th class="tar">Amount</th><th class="tac">Method</th></tr></thead>
+          <tbody>
+            <tr><td><span class="bp ba2">Utilities</span></td><td>Electricity bill</td><td class="muted">RECO</td><td class="muted">May 15</td><td class="tar bold">150,000 RWF</td><td class="tac"><span class="bp bb2">Bank</span></td></tr>
+            <tr><td><span class="bp br2">Salaries</span></td><td>Staff salaries (May)</td><td class="muted">Internal</td><td class="muted">May 1</td><td class="tar bold">3,200,000 RWF</td><td class="tac"><span class="bp bb2">Bank</span></td></tr>
+            <tr><td><span class="bp bg2">Supplies</span></td><td>Bar stock purchase</td><td class="muted">BevCo Rwanda</td><td class="muted">May 12</td><td class="tar bold">450,000 RWF</td><td class="tac"><span class="bp" style="background:var(--grayl);color:#888">Cash</span></td></tr>
+            <tr><td><span class="bp" style="background:var(--grayl);color:#888">Maintenance</span></td><td>Room 303 plumbing</td><td class="muted">Kigali Plumbers</td><td class="muted">May 18</td><td class="tar bold">85,000 RWF</td><td class="tac"><span class="bp" style="background:var(--grayl);color:#888">Cash</span></td></tr>
+            <tr><td><span class="bp bb2">Transport</span></td><td>Fuel – airport transfers</td><td class="muted">Internal</td><td class="muted">May 19</td><td class="tar bold">42,000 RWF</td><td class="tac"><span class="bp" style="background:var(--grayl);color:#888">Cash</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- STAFF -->
+    <section class="screen" id="screen-staff">
+      <div class="toolbar" style="margin-bottom:11px">
+        <button class="fp-sm active">All staff</button>
+        <button class="fp-sm">Admin</button>
+        <button class="fp-sm">Receptionist</button>
+        <button class="fp-sm">Cashier</button>
+        <button class="fp-sm">Housekeeping</button>
+        <button class="fp-sm">Kitchen</button>
+        <span class="spacer"></span>
+        <button class="tbb p" onclick="openCreateStaff()"><i class="ti ti-user-plus"></i> Add staff</button>
+      </div>
+      <div class="staff-grid" id="staff-grid"></div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="screen" id="screen-inventory">
+      <div class="toolbar" style="margin-bottom:10px">
+        <button class="fp-sm active" onclick="fInv('all',this)">All</button>
+        <button class="fp-sm" onclick="fInv('housekeeping',this)">Housekeeping</button>
+        <button class="fp-sm" onclick="fInv('kitchen',this)">Kitchen</button>
+        <button class="fp-sm" onclick="fInv('bar',this)">Bar</button>
+        <button class="fp-sm" onclick="fInv('laundry',this)">Laundry</button>
+        <button class="fp-sm" onclick="fInv('maintenance',this)">Maintenance</button>
+        <button class="fp-sm" style="border-color:var(--red);color:var(--red)" onclick="fInv('low',this)"><i class="ti ti-alert-triangle"></i> Low stock</button>
+        <span class="spacer"></span>
+        <button class="tbb p" onclick="OM('ovl-inv')"><i class="ti ti-plus"></i> Add item</button>
+      </div>
+      <div id="inv-container"></div>
+    </section>
+
+    <!-- PLACEHOLDERS -->
+    <section class="screen" id="screen-checkin">
+      <div class="placeholder"><i class="ti ti-door-enter"></i><span>Check-in / Check-out — coming soon</span></div>
+    </section>
+    <section class="screen" id="screen-settings">
+      <div class="placeholder"><i class="ti ti-settings"></i><span>Settings — coming soon</span></div>
+    </section>
+  </main>
+</div>
+
+<!-- MODALS -->
+
+<!-- Room Modal -->
+<div class="ovl" id="ovl-room">
+  <div class="mdl">
+    <div class="mh"><span class="mt3" id="rm-modal-title">Add room</span><button class="close-btn" onclick="CM('ovl-room')"><i class="ti ti-x"></i></button></div>
+    <div class="mb3">
+      <div class="fr2">
+        <div class="fr"><label class="fl">Room number</label><input class="fi" id="rm-num" placeholder="e.g. 201"></div>
+        <div class="fr"><label class="fl">Floor</label><select class="fi" id="rm-floor"><option value="1">Floor 1</option><option value="2">Floor 2</option><option value="3">Floor 3</option><option value="4">Floor 4</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Type</label><select class="fi" id="rm-type"><option>Single</option><option>Double</option><option>Twin</option><option>Deluxe</option><option>Suite</option></select></div>
+        <div class="fr"><label class="fl">Status</label><select class="fi" id="rm-status"><option value="avail">Available</option><option value="occ">Occupied</option><option value="res">Reserved</option><option value="cln">Cleaning</option><option value="mnt">Maintenance</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Price/night (RWF)</label><input class="fi" id="rm-price" type="number" placeholder="75000"></div>
+        <div class="fr"><label class="fl">Max guests</label><input class="fi" id="rm-guests" type="number" placeholder="2"></div>
+      </div>
+      <div class="fr"><label class="fl">Current guest name</label><input class="fi" id="rm-guest" placeholder="Guest name if occupied/reserved"></div>
+      <div class="fr"><label class="fl">Notes</label><input class="fi" id="rm-notes" placeholder="e.g. sea view, connecting room..."></div>
+    </div>
+    <div class="mf"><button class="mbt" onclick="CM('ovl-room')">Cancel</button><button class="mbt ok" id="rm-save-btn" onclick="saveRoom()"><i class="ti ti-check"></i> Save</button></div>
+  </div>
+</div>
+
+<!-- Booking Modal -->
+<div class="ovl" id="ovl-bk">
+  <div class="mdl">
+    <div class="mh"><span class="mt3" id="bk-modal-title">New booking</span><button class="close-btn" onclick="CM('ovl-bk')"><i class="ti ti-x"></i></button></div>
+    <div class="mb3">
+      <div class="fr"><label class="fl">Guest</label><div class="input-group"><select class="fi" id="bk-guest" style="flex:1"><option value="">— select guest —</option></select><button class="tbb p" onclick="openGPicker()" style="padding:6px 10px;white-space:nowrap"><i class="ti ti-user-search"></i></button></div></div>
+      <div class="fr"><label class="fl">Channel</label><select class="fi" id="bk-channel" onchange="togExtRef()"><option value="direct">Direct</option><option value="airbnb">Airbnb</option><option value="booking">Booking.com</option><option value="expedia">Expedia</option><option value="walkin">Walk-in</option></select></div>
+      <div class="fr" id="bk-extref-row" style="display:none"><label class="fl">Platform reference</label><input class="fi" id="bk-extref" placeholder="e.g. AIR-928374"></div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Room</label><select class="fi" id="bk-room"><option>101 — Single</option><option>102 — Single</option><option>103 — Double</option><option>201 — Deluxe</option><option>202 — Deluxe</option><option>203 — Twin</option><option>204 — Double</option><option>301 — Suite</option><option>302 — Suite</option></select></div>
+        <div class="fr"><label class="fl">Status</label><select class="fi" id="bk-status"><option value="confirmed">Confirmed</option><option value="pending">Pending</option><option value="checked_in">Checked in</option><option value="cancelled">Cancelled</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Check-in</label><input class="fi" id="bk-cin" type="date" value="2026-05-22" onchange="calcTotal()"></div>
+        <div class="fr"><label class="fl">Check-out</label><input class="fi" id="bk-cout" type="date" value="2026-05-25" onchange="calcTotal()"></div>
+      </div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Rate/night (RWF)</label><input class="fi" id="bk-rate" type="number" placeholder="75000" oninput="calcTotal()"></div>
+        <div class="fr"><label class="fl">Guests</label><input class="fi" id="bk-gcount" type="number" value="1"></div>
+      </div>
+      <div id="bk-total-preview" class="total-preview" style="display:none">Estimated: <span id="bk-total-val"></span></div>
+      <div class="fr"><label class="fl">Notes</label><input class="fi" id="bk-notes" placeholder="Special requests..."></div>
+    </div>
+    <div class="mf"><button class="mbt" onclick="CM('ovl-bk')">Cancel</button><button class="mbt ok" id="bk-save-btn" onclick="saveBk()"><i class="ti ti-check"></i> Save booking</button></div>
+  </div>
+</div>
+
+<!-- Guest Modal -->
+<div class="ovl" id="ovl-guest">
+  <div class="mdl">
+    <div class="mh"><span class="mt3" id="g-modal-title">Add guest</span><button class="close-btn" onclick="CM('ovl-guest')"><i class="ti ti-x"></i></button></div>
+    <div class="mb3">
+      <div class="fr2"><div class="fr"><label class="fl">First name</label><input class="fi" id="gf-first" placeholder="First name"></div><div class="fr"><label class="fl">Last name</label><input class="fi" id="gf-last" placeholder="Last name"></div></div>
+      <div class="fr2"><div class="fr"><label class="fl">Phone</label><input class="fi" id="gf-phone" placeholder="+250 7xx xxx xxx"></div><div class="fr"><label class="fl">Email</label><input class="fi" id="gf-email" type="email" placeholder="email@example.com"></div></div>
+      <div class="fr2"><div class="fr"><label class="fl">Nationality</label><input class="fi" id="gf-nat" placeholder="e.g. Rwandan"></div><div class="fr"><label class="fl">ID / Passport</label><input class="fi" id="gf-id" placeholder="Document number"></div></div>
+      <div class="fr2"><div class="fr"><label class="fl">Gender</label><select class="fi" id="gf-gender"><option value="">—</option><option>Male</option><option>Female</option><option>Other</option></select></div><div class="fr"><label class="fl">Date of birth</label><input class="fi" id="gf-dob" type="date"></div></div>
+      <div class="fr"><label class="fl">VIP status</label><select class="fi" id="gf-vip"><option value="regular">Regular guest</option><option value="vip">VIP</option><option value="corporate">Corporate</option></select></div>
+      <div class="fr"><label class="fl">Preferences</label><input class="fi" id="gf-prefs" placeholder="e.g. non-smoking, vegetarian..."></div>
+      <div class="fr"><label class="fl">Internal notes</label><input class="fi" id="gf-notes" placeholder="Staff notes..."></div>
+    </div>
+    <div class="mf"><button class="mbt" onclick="CM('ovl-guest')">Cancel</button><button class="mbt ok" id="g-save-btn" onclick="saveGuest()"><i class="ti ti-check"></i> Save guest</button></div>
+  </div>
+</div>
+
+<!-- Guest Picker Modal -->
+<div class="ovl" id="ovl-picker">
+  <div class="mdl">
+    <div class="mh"><span class="mt3">Select guest</span><button class="close-btn" onclick="CM('ovl-picker')"><i class="ti ti-x"></i></button></div>
+    <div class="picker-search-wrap"><div class="sbox"><i class="ti ti-search"></i><input type="text" placeholder="Search name, phone, email..." id="picker-q" oninput="renderPicker()" style="width:100%"></div></div>
+    <div id="picker-list" class="picker-list"></div>
+    <div class="picker-footer">
+      <span>Not in list?</span>
+      <button class="mbt ok" onclick="CM('ovl-picker');openCreateGuest()"><i class="ti ti-user-plus"></i> Add new guest</button>
+    </div>
+  </div>
+</div>
+
+<!-- Order Modal -->
+<div class="ovl" id="ovl-order">
+  <div class="mdl">
+    <div class="mh"><span class="mt3">New order</span><button class="close-btn" onclick="CM('ovl-order')"><i class="ti ti-x"></i></button></div>
+    <div class="mb3">
+      <div class="fr"><label class="fl">Customer type</label><select class="fi" id="ord-type" onchange="togWalkin()"><option value="room">In-room guest</option><option value="walkin">Walk-in (no room)</option></select></div>
+      <div class="fr" id="ord-room-row"><label class="fl">Room</label><select class="fi" id="ord-room"><option>101 — John Mugisha</option><option>103 — Marie & Paul</option><option>201 — David Nkusi</option><option>203 — Sarah Kim</option><option>204 — Ange Uwase</option></select></div>
+      <div class="fr" id="ord-wi-row" style="display:none"><label class="fl">Customer / table</label><input class="fi" id="ord-wi-name" placeholder="e.g. Table 3"></div>
+      <div class="fr"><label class="fl">Source</label><select class="fi" id="ord-src" onchange="renderOrdPicks()"><option value="restaurant">Restaurant</option><option value="bar">Bar</option></select></div>
+      <div class="fr"><label class="fl">Items</label><div class="ord-picks-grid" id="ord-picks"></div></div>
+      <div class="ord-sel-display" id="ord-sel-display">No items selected</div>
+    </div>
+    <div class="mf"><button class="mbt" onclick="CM('ovl-order')">Cancel</button><button class="mbt ok" onclick="saveOrder()"><i class="ti ti-check"></i> Place order</button></div>
+  </div>
+</div>
+
+<!-- Staff Modal -->
+<div class="ovl" id="ovl-staff">
+  <div class="mdl">
+    <div class="mh"><span class="mt3" id="staff-modal-title">Add staff member</span><button class="close-btn" onclick="CM('ovl-staff')"><i class="ti ti-x"></i></button></div>
+    <div class="mb3">
+      <div class="fr2"><div class="fr"><label class="fl">First name</label><input class="fi" id="sf-first" placeholder="First name"></div><div class="fr"><label class="fl">Last name</label><input class="fi" id="sf-last" placeholder="Last name"></div></div>
+      <div class="fr2"><div class="fr"><label class="fl">Phone</label><input class="fi" id="sf-phone" placeholder="+250 7xx xxx xxx"></div><div class="fr"><label class="fl">Email</label><input class="fi" id="sf-email" type="email" placeholder="email@hotel.rw"></div></div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Role</label><select class="fi" id="sf-role" onchange="updatePermPreview()"><option value="admin">Admin / Manager</option><option value="receptionist">Receptionist</option><option value="cashier">Cashier</option><option value="housekeeping">Housekeeping</option><option value="kitchen">Kitchen / Chef</option><option value="bar">Bartender</option><option value="security">Security</option></select></div>
+        <div class="fr"><label class="fl">Shift</label><select class="fi" id="sf-shift"><option>Day (6am–2pm)</option><option>Afternoon (2pm–10pm)</option><option>Night (10pm–6am)</option><option>Full day</option></select></div>
+      </div>
+      <div class="fr2"><div class="fr"><label class="fl">Start date</label><input class="fi" id="sf-start" type="date"></div><div class="fr"><label class="fl">Salary (RWF/month)</label><input class="fi" id="sf-salary" type="number" placeholder="250000"></div></div>
+      <div class="perm-box">
+        <div class="perm-title">Permissions for this role</div>
+        <div class="perm-grid" id="perm-list"></div>
+      </div>
+    </div>
+    <div class="mf"><button class="mbt" onclick="CM('ovl-staff')">Cancel</button><button class="mbt ok" onclick="saveStaff()"><i class="ti ti-check"></i> Save staff</button></div>
+  </div>
+</div>
+
+<!-- Inventory Modal -->
+<div class="ovl" id="ovl-inv">
+  <div class="mdl mdl-sm">
+    <div class="mh"><span class="mt3">Add inventory item</span><button class="close-btn" onclick="CM('ovl-inv')"><i class="ti ti-x"></i></button></div>
+    <div class="mb3">
+      <div class="fr"><label class="fl">Item name</label><input class="fi" id="inv-name-f" placeholder="e.g. Toilet paper rolls"></div>
+      <div class="fr2">
+        <div class="fr"><label class="fl">Category</label><select class="fi" id="inv-cat-f"><option value="housekeeping">Housekeeping</option><option value="kitchen">Kitchen</option><option value="bar">Bar</option><option value="laundry">Laundry</option><option value="maintenance">Maintenance</option></select></div>
+        <div class="fr"><label class="fl">Unit</label><input class="fi" id="inv-unit-f" placeholder="rolls, kg, bottles..."></div>
+      </div>
+      <div class="fr2"><div class="fr"><label class="fl">Current stock</label><input class="fi" id="inv-qty-f" type="number" placeholder="50"></div><div class="fr"><label class="fl">Min. threshold</label><input class="fi" id="inv-min-f" type="number" placeholder="20"></div></div>
+      <div class="fr"><label class="fl">Supplier</label><input class="fi" id="inv-sup-f" placeholder="Supplier name"></div>
+      <div class="fr"><label class="fl">Unit cost (RWF)</label><input class="fi" id="inv-cost-f" type="number" placeholder="500"></div>
+    </div>
+    <div class="mf"><button class="mbt" onclick="CM('ovl-inv')">Cancel</button><button class="mbt ok" onclick="saveInv()"><i class="ti ti-check"></i> Add item</button></div>
+  </div>
+</div>
+
+<!-- Invoice Modal -->
+<div class="ovl" id="ovl-invoice">
+  <div class="mdl mdl-sm">
+    <div class="mh"><span class="mt3">Order invoice</span><button class="close-btn" onclick="CM('ovl-invoice')"><i class="ti ti-x"></i></button></div>
+    <div class="invoice-body" id="invoice-content"></div>
+    <div class="mf">
+      <button class="mbt" onclick="CM('ovl-invoice')">Close</button>
+      <button class="mbt" style="border-color:var(--blue);color:var(--blue);background:var(--bluel)" onclick="alert('Printing invoice...')"><i class="ti ti-printer"></i> Print</button>
+      <button class="mbt ok" onclick="alert('Invoice downloaded as PDF')"><i class="ti ti-download"></i> Download PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="ovl" id="ovl-del">
+  <div class="mdl mdl-sm">
+    <div class="del-box">
+      <div class="del-icon"><i class="ti ti-trash"></i></div>
+      <div class="del-msg" id="del-msg">Delete?</div>
+      <div class="del-sub" id="del-sub">This cannot be undone.</div>
+      <div class="del-actions">
+        <button class="mbt" onclick="CM('ovl-del')">Cancel</button>
+        <button class="mbt danger" onclick="confirmDel()"><i class="ti ti-trash"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
